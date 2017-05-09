@@ -1,0 +1,35 @@
+version: '2.1'
+
+services:
+  web:
+    image: whale.web
+    build:
+      context: ./part1
+      dockerfile: Dockerfile
+    networks:
+      - default
+    environment:
+      - SLOGANAPI_HOSTNAME=whale.api:5000
+    depends_on:
+      - sloganapi
+  sloganapi:
+    image: whale.api
+    build:
+      context: ./part2/Whale.Api
+      dockerfile: Dockerfile
+    environment:
+      - REDIS_HOSTNAME=redis
+    networks:
+      - default
+    depends_on:
+      - redis
+  redis:
+    image: redis:nanoserver
+    networks:
+      - default
+
+
+networks:
+    default:
+        external:
+            name: nat

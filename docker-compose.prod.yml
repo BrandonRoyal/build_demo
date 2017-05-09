@@ -1,0 +1,32 @@
+version: '3.2'
+
+services:
+  web:
+    image: whale
+    build:
+      context: ./../part1/Whale.Web
+      dockerfile: Dockerfile
+    networks:
+      - whale
+    environments:
+      - SLOGANAPI_HOSTNAME=whale.api
+    depends_on:
+      - sloganapi
+  sloganapi:
+    image: whale.api
+    build:
+      context: ./Whale.Api
+      dockerfile: Dockerfile
+    environments:
+      - REDIS_HOSTNAME=redis
+    networks:
+      - whale
+    depends_on:
+      - redis
+  redis:
+    image: redis:latest
+
+
+networks:
+  whale:
+    driver: overlay
